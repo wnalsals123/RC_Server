@@ -38,7 +38,6 @@ public class client {
                     System.out.print("서버로 온 출력 : " + data + "\n");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    break;
                 }
             }
         }
@@ -55,7 +54,6 @@ public class client {
                     out.flush();
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
-                    break;
                 }
             }
         }

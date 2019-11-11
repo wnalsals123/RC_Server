@@ -4,6 +4,7 @@ import java.net.Socket;
 
 public class Server {
     int id_count = 0;
+    boolean ing = true;
     Socket[] sock = new Socket[3];
     ServerSocket s_sock = null;
     ServerThread[] st = new ServerThread[3];
@@ -68,7 +69,7 @@ public class Server {
         }
 
         public void run(){
-            while (true){
+            while (ing){
                 InputMsg();
             }
         }
