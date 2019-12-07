@@ -3,12 +3,13 @@ import java.io.*;
 
 public class SSLserver {
     public static void main(String[] arg){
-        SSLserver s = new SSLserver();
-        s.Connection();
+        SSLserver SSLs = new SSLserver();
+        SSLs.SSL_Connection();
     }
 
-    public void Connection(){
+    public void SSL_Connection(){
         try{
+            // KeyStore 툴을 이용해서 만든 파일 설정.
             System.setProperty("javax.net.ssl.keyStore", "C:\\Key\\server\\server.jks");
             System.setProperty("javax.net.ssl.keyStorePassword", "12142");
             System.setProperty("javax.net.debug", "ssl");
@@ -18,43 +19,25 @@ public class SSLserver {
 
             // 서버 소켓 생성. 1115는 포트 번호.
             SSLServerSocket sslserversocket = (SSLServerSocket)sslserversocketfactory.createServerSocket(1115);
-            System.out.println("Wating Connection");
 
-            // 클라이언트가 언제 접속할지 모르니 항상 대기.
+            // SSL RSA 통신을 통해 서버에 로그인.
+            System.out.println("SSL Client Wait...");
             while(true){
                 SSLSocket socket = (SSLSocket)sslserversocket.accept();
-                // 데이터 읽는 부분은 쓰레드로 처리.
-                ThreadServer thread = new ThreadServer(socket);
-                thread.start();
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String fromClient = in.readLine();
+                if(fromClient.equals("OK")) { // 로그인 성공 시
+                    System.out.println("SSL 로그인 성공");
+                    sslserversocket.close();
+                    break;
+                }
             }
 
-        }catch(Exception ex){
-            System.out.println(ex);
-        }
-    }
-
-    public class ThreadServer extends Thread {
-
-        private SSLSocket socket;
-        private BufferedReader in = null;            //Client로부터 데이터를 읽어들이기 위한 입력스트림
-        private PrintWriter out = null;                //Client로 데이터를 내보내기 위한 출력 스트림
-
-        public ThreadServer(SSLSocket socket){
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            try{
-                String fromClient = null;
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //입력스트림 생성
-                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))); //출력스트림 생성
-
-                fromClient = in.readLine();
-                System.out.println(fromClient);
-            }catch(Exception e){
-                System.out.println(e);
-            }
+            // 클라이언트와 통신 시작.
+            Server s = new Server();
+            s.Connection();
+        }catch(Exception e){
+            System.out.println(e);
         }
     }
 }

@@ -3,8 +3,8 @@ import java.io.*;
 
 public class SSLclient {
     public static void main(String[] arg){
-        SSLclient c = new SSLclient();
-        c.Connection();
+        SSLclient SSLc = new SSLclient();
+        SSLc.Connection();
     }
 
     public void Connection(){
@@ -13,16 +13,21 @@ public class SSLclient {
             System.setProperty("javax.net.ssl.trustStorePassword", "12142");
             System.setProperty("javax.net.debug", "ssl");
 
-            // 소켓에 서버의 IP와 포트 번호를 입력해준다.
+            // 클라이언트 소켓 팩토리 생성.
             SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+
+            // 클라이언트 소켓 생성. 1115는 포트 번호.
             SSLSocket sslsocket = (SSLSocket) sslsocketfactory.createSocket("localhost", 1115);
 
-            // 서버로 보낼 메시지 설정.
-            BufferedReader in = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
+            // SSL RSA 통신을 통해 서버에 로그인 시도.
             PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sslsocket.getOutputStream())));
-
-            out.println("Hi!");
+            out.println("OK");
             out.flush();
+            System.out.println("SSL 로그인 성공");
+
+            // 서버와 통신 시도.
+            Client c = new Client();
+            c.start();
         } catch (Exception e) {
             System.out.println(e);
         }
