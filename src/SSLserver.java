@@ -23,13 +23,17 @@ public class SSLserver {
             // SSL RSA 통신을 통해 서버에 로그인.
             System.out.println("SSL Client Wait...");
             while(true){
-                SSLSocket socket = (SSLSocket)sslserversocket.accept();
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String fromClient = in.readLine();
-                if(fromClient.equals("OK")) { // 로그인 성공 시
-                    System.out.println("SSL 로그인 성공");
-                    sslserversocket.close();
-                    break;
+                try {
+                    SSLSocket socket = (SSLSocket)sslserversocket.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String fromClient = in.readLine();
+                    if(fromClient.equals("OK")) { // 로그인 성공 시
+                        System.out.println("SSL 로그인 성공");
+                        sslserversocket.close();
+                        break;
+                    }
+                }catch (IOException e){
+                    System.out.println(e);
                 }
             }
 

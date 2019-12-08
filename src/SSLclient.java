@@ -5,6 +5,8 @@ public class SSLclient {
     public static void main(String[] arg){
         SSLclient SSLc = new SSLclient();
         SSLc.Connection();
+//        Client c = new Client();
+//        c.start();
     }
 
     public void Connection(){
